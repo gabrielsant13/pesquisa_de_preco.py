@@ -3,7 +3,7 @@ import cx_Oracle
 
 #atenção nesses caminhos
 cx_Oracle.init_oracle_client(lib_dir=r"C:\app\client\product\12.2.0\client_1\bin") #caminho de diretorio local
-#cx_Oracle.init_oracle_client(lib_dir=r"C:\app\product\11.2.0\client_1\BIN") #caminho de diretorio para servidor 13
+#cx_Oracle.init_oracle_client(lib_dir=r"C:\app\product\11.2.0\client_1\BIN") #caminho de diretorio para servidor 13 - seria necessário caso o user do servidor não fosse admin
 
 #configuracoes de conexao com o oracle
 connection = cx_Oracle.connect("user", "password", "host:port/service_name")
