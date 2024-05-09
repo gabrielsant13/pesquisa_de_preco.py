@@ -3,7 +3,7 @@ import cx_Oracle
 
 #atenção nesses caminhos
 cx_Oracle.init_oracle_client(lib_dir=r"C:\app\client\product\12.2.0\client_1\bin") #caminho de diretorio local
-#cx_Oracle.init_oracle_client(lib_dir=r"C:\app\product\11.2.0\client_1\BIN") #caminho de diretorio para servidor 13 - seria necessário caso o user do servidor não fosse admin
+#cx_Oracle.init_oracle_client(lib_dir=r"C:\app\product\11.2.0\client_1\BIN") #caminho de diretorio para servidor 13 - seria necessário caso o user não fosse admin
 
 #configuracoes de conexao com o oracle
 connection = cx_Oracle.connect("user", "password", "host:port/service_name")
@@ -90,13 +90,14 @@ while contador_id != 0:
         IFNULL(CONCAT("'",pesquisa_preco_consolidado.representante,"'"),"NULL") as representante,
         IFNULL(pesquisa_preco_consolidado.categoria,"NULL") as categoria,
         IFNULL(preco_pesquisa_preco.id_marca_concorrente,"NULL") id_marca_concorrente,
-		IFNULL(CONCAT("'",marca_concorrente.descricao,"'"),"NULL") as descricao_concorrente,
-		IFNULL(CONCAT("'",fabricante_concorrente.descricao,"'"),"NULL") as fabricante_concorrente,
-		IFNULL(REPLACE(preco_pesquisa_preco.preco_concorrente,",","."),"NULL") as preco_concorrente
+	IFNULL(CONCAT("'",marca_concorrente.descricao,"'"),"NULL") as descricao_concorrente,
+	IFNULL(CONCAT("'",fabricante_concorrente.descricao,"'"),"NULL") as fabricante_concorrente,
+	IFNULL(REPLACE(preco_pesquisa_preco.preco_concorrente,",","."),"NULL") as preco_concorrente,
+	IFNULL(REPLACE(preco_pesquisa_preco.tipo_preco ,",","."),"NULL") as tipo_preco_concorrente
         from cardealdistribuidora.pesquisa_preco_consolidado
         left join cardealdistribuidora.preco_pesquisa_preco ON preco_pesquisa_preco.id_pesquisa_preco = pesquisa_preco_consolidado.id_pesquisa
-		left join cardealdistribuidora.marca_concorrente on marca_concorrente.id = preco_pesquisa_preco.id_marca_concorrente
-		left join cardealdistribuidora.fabricante_concorrente on fabricante_concorrente.id = marca_concorrente.id_fabricante_concorrente
+	left join cardealdistribuidora.marca_concorrente on marca_concorrente.id = preco_pesquisa_preco.id_marca_concorrente
+	left join cardealdistribuidora.fabricante_concorrente on fabricante_concorrente.id = marca_concorrente.id_fabricante_concorrente
         WHERE pesquisa_preco_consolidado.id > {max_id}
         order by 1 desc
         """
@@ -144,6 +145,7 @@ while contador_id != 0:
             descricao_concorrente = column[31]
             fabricante_concorrente = column[32]
             preco_concorrente = column[33]
+            tipo_preco_concorrente = column[34]
         
 
         insert_query = f"""insert into CLT135075CONSULTA.INTR_TP_DCL 
@@ -174,7 +176,8 @@ while contador_id != 0:
         id_marca_concorrente,
         descricao_concorrente,
         fabricante_concorrente,
-        preco_concorrente
+        preco_concorrente,
+        tipo_preco_concorrente
         )
         values(
         {id},
@@ -210,7 +213,8 @@ while contador_id != 0:
         {id_marca_concorrente},
         {descricao_concorrente},
         {fabricante_concorrente},
-        {preco_concorrente}
+        {preco_concorrente},
+        {tipo_preco_concorrente}
         )"""
 
 
